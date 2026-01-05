@@ -106,48 +106,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token'], $_POST['pass
     <title>Lupa Password - Aplikasi</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-br from-orange-500 to-red-600 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gradient-to-br from-orange-500 to-red-600 min-h-screen flex items-center justify-center p-3 sm:p-4 md:p-6">
 
-<div class="w-full max-w-md">
+<div class="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
     <!-- Card -->
-    <div class="bg-white rounded-lg shadow-2xl p-8">
+    <div class="bg-white rounded-lg sm:rounded-xl shadow-lg sm:shadow-2xl p-5 sm:p-6 md:p-8">
         <!-- Header -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
-                <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="text-center mb-6 sm:mb-8">
+            <div class="inline-flex items-center justify-center w-14 sm:w-16 h-14 sm:h-16 bg-orange-100 rounded-full mb-3 sm:mb-4">
+                <svg class="w-7 sm:w-8 h-7 sm:h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
                 </svg>
             </div>
-            <h1 class="text-3xl font-bold text-gray-800">Lupa Password?</h1>
-            <p class="text-gray-500 text-sm mt-2">Kami siap membantu Anda pulihkan akun</p>
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">Lupa Password?</h1>
+            <p class="text-gray-500 text-xs sm:text-sm mt-1 sm:mt-2">Kami siap membantu Anda pulihkan akun</p>
         </div>
 
         <!-- Error Alert -->
         <?php if ($error): ?>
-        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3 animate-pulse">
-            <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+        <div class="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2 sm:gap-3 animate-pulse">
+            <svg class="w-4 sm:w-5 h-4 sm:h-5 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
             </svg>
-            <span class="text-red-700 text-sm"><?= htmlspecialchars($error) ?></span>
+            <span class="text-red-700 text-xs sm:text-sm"><?= htmlspecialchars($error) ?></span>
         </div>
         <?php endif; ?>
 
         <!-- Success Alert -->
         <?php if ($success): ?>
-        <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3">
-            <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+        <div class="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-2 sm:gap-3">
+            <svg class="w-4 sm:w-5 h-4 sm:h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
             </svg>
-            <span class="text-green-700 text-sm"><?= $success ?></span>
+            <span class="text-green-700 text-xs sm:text-sm"><?= $success ?></span>
         </div>
         <?php endif; ?>
 
         <?php if (!isset($_GET['token'])): ?>
         <!-- MODE 1: REQUEST RESET -->
-        <form method="post" id="emailForm" class="space-y-5">
+        <form method="post" id="emailForm" class="space-y-4 sm:space-y-5">
             <!-- Email Input -->
             <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="email" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                     Alamat Email
                 </label>
                 <input 
@@ -155,10 +155,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token'], $_POST['pass
                     id="email"
                     name="email" 
                     required
-                    class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none"
+                    class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none"
                     placeholder="Masukkan email terdaftar Anda"
                 >
-                <p class="text-xs text-gray-500 mt-2">
+                <p class="text-xs text-gray-500 mt-1 sm:mt-2">
                     Kami akan mengirimkan link reset password ke email Anda.
                 </p>
             </div>
@@ -166,12 +166,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token'], $_POST['pass
             <!-- Submit Button -->
             <button 
                 type="submit" 
-                class="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold py-2.5 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                class="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white text-sm sm:text-base font-semibold py-2 sm:py-2.5 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
                 id="submitBtn"
             >
                 <span id="btnText">Kirim Link Reset</span>
                 <span id="loadingSpinner" class="hidden animate-spin">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 sm:w-5 h-4 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
                 </span>
@@ -180,12 +180,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token'], $_POST['pass
 
         <?php else: ?>
         <!-- MODE 2: RESET PASSWORD -->
-        <form method="post" id="resetForm" class="space-y-5">
+        <form method="post" id="resetForm" class="space-y-4 sm:space-y-5">
             <input type="hidden" name="token" value="<?= htmlspecialchars($_GET['token']) ?>">
             
             <!-- New Password Input -->
             <div>
-                <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                <label for="password" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                     Password Baru
                 </label>
                 <div class="relative">
@@ -195,16 +195,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token'], $_POST['pass
                         name="password" 
                         required
                         minlength="8"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none"
+                        class="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all outline-none"
                         placeholder="Minimal 8 karakter"
                         onchange="validateNewPassword(this.value)"
                     >
                     <button 
                         type="button" 
                         onclick="togglePasswordReset()"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        class="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                     >
-                        <svg id="eyeIconReset" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg id="eyeIconReset" class="w-4 sm:w-5 h-4 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                         </svg>
@@ -216,21 +216,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token'], $_POST['pass
             <!-- Submit Button -->
             <button 
                 type="submit" 
-                class="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold py-2.5 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                class="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white text-sm sm:text-base font-semibold py-2 sm:py-2.5 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
                 id="submitBtnReset"
             >
                 <span id="btnTextReset">Reset Password</span>
                 <span id="loadingSpinnerReset" class="hidden animate-spin">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 sm:w-5 h-4 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
                 </span>
             </button>
             
             <?php if (!empty($resetSuccess)): ?>
-            <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
-                <p class="text-blue-700 text-sm font-semibold mb-3">✅ Password berhasil direset!</p>
-                <a href="login.php" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors">
+            <div class="mt-3 sm:mt-4 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
+                <p class="text-blue-700 text-xs sm:text-sm font-semibold mb-2 sm:mb-3">✅ Password berhasil direset!</p>
+                <a href="login.php" class="inline-block bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-1.5 sm:py-2 px-4 sm:px-6 rounded-lg transition-colors">
                     Kembali ke Login
                 </a>
             </div>
@@ -239,15 +239,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token'], $_POST['pass
         <?php endif; ?>
 
         <!-- Back to Login -->
-        <div class="mt-6 text-center">
-            <a href="login.php" class="text-gray-600 hover:text-gray-800 text-sm font-medium transition-colors">
+        <div class="mt-4 sm:mt-6 text-center">
+            <a href="login.php" class="text-gray-600 hover:text-gray-800 text-xs sm:text-sm font-medium transition-colors">
                 ← Kembali ke halaman masuk
             </a>
         </div>
     </div>
 
     <!-- Footer -->
-    <p class="text-center text-white text-xs mt-8 opacity-75">
+    <p class="text-center text-white text-xs mt-6 sm:mt-8 opacity-75">
         © 2026 Aplikasi. Semua hak dilindungi.
     </p>
 </div>
