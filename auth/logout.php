@@ -65,7 +65,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
 <script>
 // Redirect ke halaman login setelah 2 detik
 setTimeout(function() {
-    window.location.href = 'login.php';
+    window.location.href = '/public/index.php';
 }, 2000);
 </script>
 

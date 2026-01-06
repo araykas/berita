@@ -4,6 +4,8 @@ require_once '../config/config.php';
 $db = getConnection();
 $error = '';
 $success = '';
+$showResetLink = false;
+$resetSuccess = false;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,9 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
 
             // SIMULASI EMAIL
             $link = "http://localhost:8000/auth/lupa_password.php?token=$token";
-            $success = "Link reset (DEV MODE): <a href='$link'>$link</a>";
+            $success = $link; // Simpan link untuk ditampilkan nanti
+            $showResetLink = true;
         } else {
             $success = 'Jika email terdaftar, link reset akan dikirim.';
+            $showResetLink = false;
         }
     }
 }
@@ -134,15 +138,97 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token'], $_POST['pass
 
         <!-- Success Alert -->
         <?php if ($success): ?>
-        <div class="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-2 sm:gap-3">
-            <svg class="w-4 sm:w-5 h-4 sm:h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-            </svg>
-            <span class="text-green-700 text-xs sm:text-sm"><?= $success ?></span>
+        <div class="mb-4 sm:mb-6">
+            <?php if (isset($showResetLink) && $showResetLink): ?>
+            <!-- Professional Reset Link Display -->
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg p-4 sm:p-6">
+                <!-- Success Icon & Message -->
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 sm:w-6 h-5 sm:h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-base sm:text-lg font-bold text-green-700">Link Reset Dikirim!</h3>
+                        <p class="text-xs sm:text-sm text-green-600">Link berlaku selama 1 jam</p>
+                    </div>
+                </div>
+
+                <!-- Reset Link Box -->
+                <div class="bg-white rounded-lg border border-green-200 p-3 sm:p-4 mb-4">
+                    <p class="text-xs text-gray-600 mb-2 font-medium">LINK RESET PASSWORD (MODE DEVELOPMENT):</p>
+                    <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-2 sm:p-3 border border-gray-200">
+                        <input 
+                            type="text" 
+                            id="resetLink"
+                            value="<?= htmlspecialchars($success) ?>" 
+                            readonly
+                            class="flex-1 bg-transparent outline-none text-xs sm:text-sm text-gray-700 font-mono overflow-auto"
+                        >
+                        <button 
+                            onclick="copyToClipboard()"
+                            class="px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors flex items-center gap-1 text-xs sm:text-sm font-semibold whitespace-nowrap"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Instructions -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4 mb-4">
+                    <p class="text-xs sm:text-sm text-blue-800 font-medium mb-2">
+                        <svg class="w-4 h-4 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zm-11-1a1 1 0 11-2 0 1 1 0 012 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        Cara Menggunakan:
+                    </p>
+                    <ol class="text-xs sm:text-sm text-blue-700 space-y-1 pl-6 list-decimal">
+                        <li>Klik tombol "<strong>Copy</strong>" untuk menyalin link</li>
+                        <li>Buka link di browser Anda</li>
+                        <li>Masukkan password baru Anda</li>
+                        <li>Klik tombol reset untuk menyelesaikan</li>
+                    </ol>
+                </div>
+
+                <!-- Direct Link Button -->
+                <a 
+                    href="<?= htmlspecialchars($success) ?>" 
+                    target="_blank"
+                    class="w-full block text-center px-4 py-2.5 sm:py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95"
+                >
+                    <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    </svg>
+                    Buka Link Reset Password
+                </a>
+
+                <!-- Important Info -->
+                <div class="mt-4 pt-4 border-t border-green-200">
+                    <p class="text-xs text-gray-600 text-center">
+                        <svg class="w-4 h-4 inline mr-1 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        Link hanya berlaku selama 1 jam. Jangan bagikan link ini ke siapapun.
+                    </p>
+                </div>
+            </div>
+            <?php else: ?>
+            <!-- Generic Success Message -->
+            <div class="p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-2 sm:gap-3">
+                <svg class="w-4 sm:w-5 h-4 sm:h-5 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-green-700 text-xs sm:text-sm"><?= htmlspecialchars($success) ?></span>
+            </div>
+            <?php endif; ?>
         </div>
         <?php endif; ?>
 
-        <?php if (!isset($_GET['token'])): ?>
+        <?php if (!isset($_GET['token']) && (!isset($showResetLink) || !$showResetLink)): ?>
         <!-- MODE 1: REQUEST RESET -->
         <form method="post" id="emailForm" class="space-y-4 sm:space-y-5">
             <!-- Email Input -->
@@ -177,9 +263,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token'], $_POST['pass
                 </span>
             </button>
         </form>
-
-        <?php else: ?>
+        <?php elseif (isset($_GET['token'])): ?>
         <!-- MODE 2: RESET PASSWORD -->
+        <?php if (empty($resetSuccess)): ?>
         <form method="post" id="resetForm" class="space-y-4 sm:space-y-5">
             <input type="hidden" name="token" value="<?= htmlspecialchars($_GET['token']) ?>">
             
@@ -226,24 +312,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['token'], $_POST['pass
                     </svg>
                 </span>
             </button>
-            
-            <?php if (!empty($resetSuccess)): ?>
-            <div class="mt-3 sm:mt-4 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
-                <p class="text-blue-700 text-xs sm:text-sm font-semibold mb-2 sm:mb-3">✅ Password berhasil direset!</p>
-                <a href="login.php" class="inline-block bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-1.5 sm:py-2 px-4 sm:px-6 rounded-lg transition-colors">
-                    Kembali ke Login
-                </a>
-            </div>
-            <?php endif; ?>
         </form>
-        <?php endif; ?>
-
-        <!-- Back to Login -->
-        <div class="mt-4 sm:mt-6 text-center">
-            <a href="login.php" class="text-gray-600 hover:text-gray-800 text-xs sm:text-sm font-medium transition-colors">
-                ← Kembali ke halaman masuk
+        <?php else: ?>
+        <!-- SUCCESS MESSAGE - HIDE FORM -->
+        <div class="p-4 sm:p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg text-center">
+            <div class="flex justify-center mb-4">
+                <div class="w-16 sm:w-20 h-16 sm:h-20 bg-green-100 rounded-full flex items-center justify-center">
+                    <svg class="w-8 sm:w-10 h-8 sm:h-10 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-bold text-green-700 mb-2">✅ Berhasil!</h2>
+            <p class="text-green-600 text-sm sm:text-base mb-6">Password Anda telah berhasil direset.</p>
+            <p class="text-gray-600 text-xs sm:text-sm mb-6">Silakan gunakan password baru Anda untuk login ke akun Anda.</p>
+            <a href="login.php" class="inline-block bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-2.5 sm:py-3 px-6 sm:px-8 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95">
+                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h6a3 3 0 013 3v1"></path>
+                </svg>
+                Masuk Sekarang
             </a>
         </div>
+        <?php endif; ?>
+        <?php endif; ?>
     </div>
 
     <!-- Footer -->
@@ -273,6 +364,23 @@ function validateNewPassword(value) {
     } else {
         errorMsg.classList.add('hidden');
     }
+}
+
+function copyToClipboard() {
+    const link = document.getElementById('resetLink');
+    link.select();
+    document.execCommand('copy');
+    
+    // Show feedback
+    const btn = event.target.closest('button');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>Tersalin!';
+    btn.classList.add('bg-green-600');
+    
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.classList.remove('bg-green-600');
+    }, 2000);
 }
 
 const emailForm = document.getElementById('emailForm');
