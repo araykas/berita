@@ -34,7 +34,7 @@ try {
 <body class="bg-gray-50">
     <div class="flex h-screen bg-gray-50">
         <!-- Sidebar -->
-        <div id="sidebar" class="fixed lg:relative inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-blue-600 to-blue-800 text-white transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+        <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-blue-600 to-blue-800 text-white transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
             <!-- Logo/Header -->
             <div class="h-20 flex items-center justify-between px-6 border-b border-blue-700">
                 <div class="flex items-center gap-3">
