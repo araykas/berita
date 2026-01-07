@@ -34,7 +34,7 @@ try {
 <body class="bg-gray-50">
     <div class="flex h-screen bg-gray-50">
         <!-- Sidebar -->
-        <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-blue-600 to-blue-800 text-white transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+        <div id="sidebar" class="fixed lg:relative inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-blue-600 to-blue-800 text-white transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
             <!-- Logo/Header -->
             <div class="h-20 flex items-center justify-between px-6 border-b border-blue-700">
                 <div class="flex items-center gap-3">
@@ -73,22 +73,22 @@ try {
                 <div class="pt-2">
                     <p class="px-4 py-2 text-blue-200 text-xs font-bold uppercase tracking-wider">Kelola Data</p>
                     
-                    <a href="../admin/user/r.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-colors text-blue-100 hover:text-white">
+                    <a href="#" onclick="loadPage('user')" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-colors text-blue-100 hover:text-white">
                         <i class="fas fa-users w-5"></i>
                         <span>Pengguna</span>
                     </a>
 
-                    <a href="../admin/berita/r.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-colors text-blue-100 hover:text-white">
+                    <a href="#" onclick="loadPage('berita')" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-colors text-blue-100 hover:text-white">
                         <i class="fas fa-newspaper w-5"></i>
                         <span>Berita</span>
                     </a>
 
-                    <a href="../admin/kategori/r.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-colors text-blue-100 hover:text-white">
+                    <a href="#" onclick="loadPage('kategori')" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-colors text-blue-100 hover:text-white">
                         <i class="fas fa-folder w-5"></i>
                         <span>Kategori</span>
                     </a>
 
-                    <a href="../admin/komentar/r.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-colors text-blue-100 hover:text-white">
+                    <a href="#" onclick="loadPage('komentar')" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-colors text-blue-100 hover:text-white">
                         <i class="fas fa-comments w-5"></i>
                         <span>Komentar</span>
                     </a>
@@ -138,13 +138,13 @@ try {
             <main class="flex-1 overflow-auto">
                 <div class="p-4 md:p-8">
                     <!-- Welcome Section -->
-                    <div class="mb-8">
+                    <div id="welcomeSection" class="mb-8">
                         <h1 class="text-3xl font-bold text-gray-800">Selamat Datang, <?= htmlspecialchars($_SESSION['username']) ?></h1>
                         <p class="text-gray-600 mt-1">Kelola aplikasi berita Anda dari sini</p>
                     </div>
 
                     <!-- Statistics Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div id="statisticsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                         <!-- Users Card -->
                         <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500 hover:shadow-lg transition-shadow">
                             <div class="flex items-center justify-between">
@@ -156,7 +156,7 @@ try {
                                     <i class="fas fa-users text-2xl text-blue-500"></i>
                                 </div>
                             </div>
-                            <a href="../admin/user/r.php" class="text-blue-500 text-sm font-medium mt-4 inline-flex items-center gap-1 hover:gap-2 transition-all">
+                            <a href="#" onclick="loadPage('user')" class="text-blue-500 text-sm font-medium mt-4 inline-flex items-center gap-1 hover:gap-2 transition-all">
                                 Lihat Detail <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
@@ -211,7 +211,7 @@ try {
                     </div>
 
                     <!-- Quick Actions -->
-                    <div class="bg-white rounded-lg shadow-md p-6">
+                    <div id="quickActionsSection" class="bg-white rounded-lg shadow-md p-6">
                         <h3 class="text-lg font-bold text-gray-800 mb-6">Aksi Cepat</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             <a href="../admin/berita/c.php" class="flex items-center gap-3 p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200 hover:border-green-400 transition-all hover:shadow-md">
@@ -305,6 +305,34 @@ try {
                 }
             });
         });
+
+        // Load page function
+        function loadPage(page) {
+            const welcomeSection = document.getElementById('welcomeSection');
+            const statisticsGrid = document.getElementById('statisticsGrid');
+            const quickActionsSection = document.getElementById('quickActionsSection');
+
+            if (page === 'user') {
+                welcomeSection.innerHTML = '<h1 class="text-3xl font-bold text-gray-800">Manajemen Pengguna</h1><p class="text-gray-600 mt-1">Kelola semua pengguna aplikasi</p>';
+                statisticsGrid.innerHTML = '';
+                quickActionsSection.innerHTML = '<h3 class="text-lg font-bold text-gray-800 mb-6">Daftar Pengguna</h3><p class="text-gray-600">Fitur manajemen pengguna sedang dikembangkan...</p>';
+            } else if (page === 'berita') {
+                welcomeSection.innerHTML = '<h1 class="text-3xl font-bold text-gray-800">Manajemen Berita</h1><p class="text-gray-600 mt-1">Kelola semua berita aplikasi</p>';
+                statisticsGrid.innerHTML = '';
+                quickActionsSection.innerHTML = '<h3 class="text-lg font-bold text-gray-800 mb-6">Daftar Berita</h3><p class="text-gray-600">Fitur manajemen berita sedang dikembangkan...</p>';
+            } else if (page === 'kategori') {
+                welcomeSection.innerHTML = '<h1 class="text-3xl font-bold text-gray-800">Manajemen Kategori</h1><p class="text-gray-600 mt-1">Kelola semua kategori aplikasi</p>';
+                statisticsGrid.innerHTML = '';
+                quickActionsSection.innerHTML = '<h3 class="text-lg font-bold text-gray-800 mb-6">Daftar Kategori</h3><p class="text-gray-600">Fitur manajemen kategori sedang dikembangkan...</p>';
+            } else if (page === 'komentar') {
+                welcomeSection.innerHTML = '<h1 class="text-3xl font-bold text-gray-800">Manajemen Komentar</h1><p class="text-gray-600 mt-1">Kelola semua komentar aplikasi</p>';
+                statisticsGrid.innerHTML = '';
+                quickActionsSection.innerHTML = '<h3 class="text-lg font-bold text-gray-800 mb-6">Daftar Komentar</h3><p class="text-gray-600">Fitur manajemen komentar sedang dikembangkan...</p>';
+            } else {
+                // Reset ke dashboard default
+                location.reload();
+            }
+        }
     </script>
 </body>
 </html>
