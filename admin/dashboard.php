@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../config/config.php';
+require_once './routing.php';
 
 // Check if user is logged in and is admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
@@ -8,17 +9,26 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
-// Get statistics
-try {
-    $db = getConnection();
-    
-    $usersCount = $db->query("SELECT COUNT(*) as total FROM users")->fetch(PDO::FETCH_ASSOC)['total'];
-    $newsCount = $db->query("SELECT COUNT(*) as total FROM news")->fetch(PDO::FETCH_ASSOC)['total'];
-    $categoriesCount = $db->query("SELECT COUNT(*) as total FROM categories")->fetch(PDO::FETCH_ASSOC)['total'];
-    $commentsCount = $db->query("SELECT COUNT(*) as total FROM comments")->fetch(PDO::FETCH_ASSOC)['total'];
-    
-} catch (PDOException $e) {
-    $usersCount = $newsCount = $categoriesCount = $commentsCount = 0;
+$currentPage = isset($_GET['page']) ? $_GET['page'] : 'home';
+$validPages = ['home', 'user', 'berita', 'kategori', 'komentar'];
+
+if (!in_array($currentPage, $validPages)) {
+    $currentPage = 'home';
+}
+
+// Get dashboard statistics for home page
+if ($currentPage === 'home') {
+    try {
+        $usersCount = $conn->query("SELECT COUNT(*) as count FROM users")->fetch(PDO::FETCH_ASSOC)['count'] ?? 0;
+        $newsCount = $conn->query("SELECT COUNT(*) as count FROM berita")->fetch(PDO::FETCH_ASSOC)['count'] ?? 0;
+        $categoriesCount = $conn->query("SELECT COUNT(*) as count FROM kategori")->fetch(PDO::FETCH_ASSOC)['count'] ?? 0;
+        $commentsCount = $conn->query("SELECT COUNT(*) as count FROM komentar")->fetch(PDO::FETCH_ASSOC)['count'] ?? 0;
+    } catch (Exception $e) {
+        $usersCount = 0;
+        $newsCount = 0;
+        $categoriesCount = 0;
+        $commentsCount = 0;
+    }
 }
 ?>
 
@@ -34,7 +44,7 @@ try {
 <body class="bg-gray-50">
     <div class="flex h-screen bg-gray-50">
         <!-- Sidebar -->
-        <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-blue-600 to-blue-800 text-white transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+        <div id="sidebar" class="fixed lg:relative inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-blue-600 to-blue-800 text-white transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
             <!-- Logo/Header -->
             <div class="h-20 flex items-center justify-between px-6 border-b border-blue-700">
                 <div class="flex items-center gap-3">
@@ -64,7 +74,7 @@ try {
             <!-- Navigation Menu -->
             <nav class="px-4 py-6 space-y-2">
                 <!-- Dashboard Link -->
-                <a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-700 text-white font-medium transition-all">
+                <a href="?page=home" class="flex items-center gap-3 px-4 py-3 rounded-lg <?= $currentPage === 'home' ? 'bg-blue-700 text-white' : 'text-blue-100 hover:bg-blue-700 hover:text-white' ?> font-medium transition-all">
                     <i class="fas fa-th-large w-5"></i>
                     <span>Dashboard</span>
                 </a>
@@ -73,22 +83,22 @@ try {
                 <div class="pt-2">
                     <p class="px-4 py-2 text-blue-200 text-xs font-bold uppercase tracking-wider">Kelola Data</p>
                     
-                    <a href="../admin/user/r.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-colors text-blue-100 hover:text-white">
+                    <a href="?page=user" class="flex items-center gap-3 px-4 py-2.5 rounded-lg <?= $currentPage === 'user' ? 'bg-blue-700 text-white' : 'text-blue-100 hover:bg-blue-700 hover:text-white' ?> transition-colors">
                         <i class="fas fa-users w-5"></i>
                         <span>Pengguna</span>
                     </a>
 
-                    <a href="../admin/berita/r.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-colors text-blue-100 hover:text-white">
+                    <a href="?page=berita" class="flex items-center gap-3 px-4 py-2.5 rounded-lg <?= $currentPage === 'berita' ? 'bg-blue-700 text-white' : 'text-blue-100 hover:bg-blue-700 hover:text-white' ?> transition-colors">
                         <i class="fas fa-newspaper w-5"></i>
                         <span>Berita</span>
                     </a>
 
-                    <a href="../admin/kategori/r.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-colors text-blue-100 hover:text-white">
+                    <a href="?page=kategori" class="flex items-center gap-3 px-4 py-2.5 rounded-lg <?= $currentPage === 'kategori' ? 'bg-blue-700 text-white' : 'text-blue-100 hover:bg-blue-700 hover:text-white' ?> transition-colors">
                         <i class="fas fa-folder w-5"></i>
                         <span>Kategori</span>
                     </a>
 
-                    <a href="../admin/komentar/r.php" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-colors text-blue-100 hover:text-white">
+                    <a href="?page=komentar" class="flex items-center gap-3 px-4 py-2.5 rounded-lg <?= $currentPage === 'komentar' ? 'bg-blue-700 text-white' : 'text-blue-100 hover:bg-blue-700 hover:text-white' ?> transition-colors">
                         <i class="fas fa-comments w-5"></i>
                         <span>Komentar</span>
                     </a>
@@ -137,124 +147,22 @@ try {
             <!-- Page Content -->
             <main class="flex-1 overflow-auto">
                 <div class="p-4 md:p-8">
-                    <!-- Welcome Section -->
-                    <div class="mb-8">
-                        <h1 class="text-3xl font-bold text-gray-800">Selamat Datang, <?= htmlspecialchars($_SESSION['username']) ?></h1>
-                        <p class="text-gray-600 mt-1">Kelola aplikasi berita Anda dari sini</p>
-                    </div>
-
-                    <!-- Statistics Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        <!-- Users Card -->
-                        <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500 hover:shadow-lg transition-shadow">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-gray-600 text-sm font-medium">Total Pengguna</p>
-                                    <p class="text-3xl font-bold text-gray-800 mt-2"><?= $usersCount ?></p>
-                                </div>
-                                <div class="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-users text-2xl text-blue-500"></i>
-                                </div>
-                            </div>
-                            <a href="../admin/user/r.php" class="text-blue-500 text-sm font-medium mt-4 inline-flex items-center gap-1 hover:gap-2 transition-all">
-                                Lihat Detail <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-
-                        <!-- News Card -->
-                        <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500 hover:shadow-lg transition-shadow">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-gray-600 text-sm font-medium">Total Berita</p>
-                                    <p class="text-3xl font-bold text-gray-800 mt-2"><?= $newsCount ?></p>
-                                </div>
-                                <div class="w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-newspaper text-2xl text-green-500"></i>
-                                </div>
-                            </div>
-                            <a href="../admin/berita/r.php" class="text-green-500 text-sm font-medium mt-4 inline-flex items-center gap-1 hover:gap-2 transition-all">
-                                Lihat Detail <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-
-                        <!-- Categories Card -->
-                        <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500 hover:shadow-lg transition-shadow">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-gray-600 text-sm font-medium">Total Kategori</p>
-                                    <p class="text-3xl font-bold text-gray-800 mt-2"><?= $categoriesCount ?></p>
-                                </div>
-                                <div class="w-14 h-14 bg-purple-100 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-folder text-2xl text-purple-500"></i>
-                                </div>
-                            </div>
-                            <a href="../admin/kategori/r.php" class="text-purple-500 text-sm font-medium mt-4 inline-flex items-center gap-1 hover:gap-2 transition-all">
-                                Lihat Detail <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-
-                        <!-- Comments Card -->
-                        <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-orange-500 hover:shadow-lg transition-shadow">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="text-gray-600 text-sm font-medium">Total Komentar</p>
-                                    <p class="text-3xl font-bold text-gray-800 mt-2"><?= $commentsCount ?></p>
-                                </div>
-                                <div class="w-14 h-14 bg-orange-100 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-comments text-2xl text-orange-500"></i>
-                                </div>
-                            </div>
-                            <a href="../admin/komentar/r.php" class="text-orange-500 text-sm font-medium mt-4 inline-flex items-center gap-1 hover:gap-2 transition-all">
-                                Lihat Detail <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <div class="bg-white rounded-lg shadow-md p-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-6">Aksi Cepat</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <a href="../admin/berita/c.php" class="flex items-center gap-3 p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200 hover:border-green-400 transition-all hover:shadow-md">
-                                <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white">
-                                    <i class="fas fa-plus"></i>
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-gray-800">Tambah Berita</p>
-                                    <p class="text-xs text-gray-600">Buat berita baru</p>
-                                </div>
-                            </a>
-
-                            <a href="../admin/kategori/c.php" class="flex items-center gap-3 p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200 hover:border-blue-400 transition-all hover:shadow-md">
-                                <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white">
-                                    <i class="fas fa-plus"></i>
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-gray-800">Tambah Kategori</p>
-                                    <p class="text-xs text-gray-600">Kategori baru</p>
-                                </div>
-                            </a>
-
-                            <a href="../admin/user/c.php" class="flex items-center gap-3 p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200 hover:border-purple-400 transition-all hover:shadow-md">
-                                <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center text-white">
-                                    <i class="fas fa-plus"></i>
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-gray-800">Tambah Pengguna</p>
-                                    <p class="text-xs text-gray-600">Pengguna baru</p>
-                                </div>
-                            </a>
-
-                            <a href="../auth/logout.php" class="flex items-center gap-3 p-4 bg-gradient-to-br from-red-50 to-red-100 rounded-lg border border-red-200 hover:border-red-400 transition-all hover:shadow-md">
-                                <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-gray-800">Logout</p>
-                                    <p class="text-xs text-gray-600">Keluar aplikasi</p>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
+                    <?php
+                    // Load module
+                    if ($currentPage === 'home') {
+                        require_once 'dashboard_main.php';
+                    } elseif ($currentPage === 'user') {
+                        require_once 'user/r.php';
+                    } elseif ($currentPage === 'berita') {
+                        require_once 'berita/r.php';
+                    } elseif ($currentPage === 'kategori') {
+                        require_once 'kategori/r.php';
+                    } elseif ($currentPage === 'komentar') {
+                        require_once 'komentar/r.php';
+                    } else {
+                        echo '<p class="text-red-500">Modul tidak ditemukan</p>';
+                    }
+                    ?>
                 </div>
             </main>
         </div>

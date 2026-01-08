@@ -1,3 +1,11 @@
 git add .
 git commit -m "dashboard ui/ux error!"
 git push
+
+git log --oneline
+a1b2c3d update dashboard
+git checkout 342a278 -- admin/dashboard.php
+
+git checkout nama-branch -- path/ke/file.ext
+
+git restore --source=a1b2c3d path/ke/file.ext
